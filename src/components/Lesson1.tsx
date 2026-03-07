@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Key, CheckCircle, XCircle, AlertTriangle, Info, BookOpen, GraduationCap } from 'lucide-react';
+import { Database, Key, CheckCircle, XCircle,  Info, BookOpen, GraduationCap } from 'lucide-react';
 
 // ==========================================
 // TIPOS E INTERFACES (TypeScript)
@@ -63,7 +63,7 @@ const LESSON_DATA: LessonSection[] = [
     },
     diagram: {
       title: 'Esquema de Tablas Relacionadas',
-      description: 'Diagrama estático que muestra entidades (Estudiantes, Cursos e Inscripciones) y cómo se conectan.',
+      description: 'Diagrama que muestra entidades (Estudiantes, Cursos e Inscripciones) y cómo se conectan.',
       type: 'concept'
     }
   },
@@ -590,13 +590,8 @@ const LessonLayout: React.FC = () => {
           <div className="bg-blue-600 p-2 rounded-lg">
             <GraduationCap size={28} className="text-white" />
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight">DataEdu</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight">Profundización en el Modelo Relacional</h1>
         </div>
-        <nav className="grid justify-items-start md:justify-items-end">
-          <span className="text-slate-300 font-medium text-sm border border-slate-700 px-3 py-1 rounded-full bg-slate-800">
-            Módulo: Fundamentos de Bases de Datos
-          </span>
-        </nav>
       </header>
 
       {/* Sistema de Pestañas (Tabs) Superior */}

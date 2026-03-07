@@ -1,425 +1,378 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  GitBranch, 
-  BrainCircuit, 
-  History, 
   Database, 
-   
+  User, 
+  ShieldCheck, 
+  ShieldAlert, 
+  KeyRound, 
+  Server,
+  Search,
+  PlusCircle,
+  Edit,
+  Trash2,
+  FileCode2,
+  Settings
 } from 'lucide-react';
-import { 
-  
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area 
-} from 'recharts';
-import DivCarousel from '../assets/DivCarousel';
 
 // --- Tipos e Interfaces ---
-
 interface TabData {
   id: string;
-  label: string;
-  icon: React.ReactNode;
   title: string;
-  description: React.ReactNode;
-  content: React.ReactNode;
 }
 
-// --- Componentes de UI Base ---
+interface SectionData {
+  id: string;
+  tabTitle: string;
+  diagramTitle: string;
+  diagramDescription: React.ReactNode;
+  renderDiagram: () => React.ReactNode;
+}
 
-const Card: React.FC<{ children: React.ReactNode; className?: string; title?: string }> = ({ 
-  children, 
-  className = "",
-  title 
-}) => (
-  <div className={`bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden ${className}`}>
-    {title && (
-      <div className="bg-slate-50 p-4 border-b border-slate-100">
-        <h3 className="font-semibold text-slate-700">{title}</h3>
-      </div>
-    )}
-    <div className="p-6 h-full">
+// --- Componentes Base ---
+
+const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => {
+  return (
+    <div className={`bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden ${className}`}>
       {children}
     </div>
-  </div>
-);
-
-// --- Diagramas Específicos ---
-
-// 1. Línea del tiempo (1956) - Estático
-const TimelineDiagram: React.FC = () => {
-  return (
-    <div className="h-full w-full grid grid-cols-[auto_1fr] gap-4">
-      {/* Columna Izquierda: Años */}
-      <div className="grid grid-rows-3 gap-8 justify-items-end text-slate-400 font-mono text-sm pt-2">
-        <div>1950</div>
-        <div className="text-blue-600 font-bold text-lg">1956</div>
-        <div>1960s</div>
-      </div>
-
-      {/* Columna Derecha: Eventos con línea conectora */}
-      <div className="relative border-l-2 border-slate-200 pl-8 grid grid-rows-3 gap-8">
-        {/* Evento Previo */}
-        <div className="opacity-50">
-          <h4 className="font-bold text-slate-600">Test de Turing</h4>
-          <p className="text-xs text-slate-500">Alan Turing propone "¿Pueden pensar las máquinas?"</p>
-        </div>
-
-        {/* Evento Principal */}
-        <div className="relative">
-          <div className="absolute -left-[39px] top-1 w-5 h-5 bg-blue-600 rounded-full border-4 border-white shadow-sm"></div>
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-            <h4 className="font-bold text-blue-900 text-lg mb-1">Conferencia de Dartmouth</h4>
-            <p className="text-sm text-blue-800">
-              Nacimiento formal del término <strong>"Inteligencia Artificial"</strong>.
-            </p>
-            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-white p-2 rounded shadow-sm text-slate-600">
-                <span className="font-semibold block text-slate-900">McCarthy & Minsky</span>
-                Organizadores
-              </div>
-              <div className="bg-white p-2 rounded shadow-sm text-slate-600">
-                <span className="font-semibold block text-slate-900">Objetivo</span>
-                Simular aprendizaje
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Evento Posterior */}
-        <div className="opacity-50">
-          <h4 className="font-bold text-slate-600">La Era Dorada</h4>
-          <p className="text-xs text-slate-500">Desarrollo de los primeros solucionadores de problemas generales.</p>
-        </div>
-      </div>
-    </div>
   );
 };
-
-// 2. Árbol de Decisión (Simbólico) - Estático
-const DecisionTreeDiagram: React.FC = () => {
-  return (
-    <div className="h-full w-full grid content-center justify-center">
-      {/* Contenedor Grid del Árbol */}
-      <div className="grid grid-cols-4 gap-4 text-sm text-center max-w-lg mx-auto">
-        
-        {/* Nivel 1: Raíz */}
-        <div className="col-span-4 justify-self-center z-10">
-          <div className="bg-slate-800 text-white px-6 py-3 rounded-lg shadow-md border border-slate-700">
-            <div className="font-mono text-xs text-slate-400 mb-1">INPUT: DATOS</div>
-            ¿Tiene motor?
-          </div>
-          {/* Línea conectora vertical */}
-          <div className="h-8 w-0.5 bg-slate-300 mx-auto"></div>
-        </div>
-
-        {/* Línea horizontal conectora de ramas */}
-        <div className="col-span-4 h-0.5 bg-slate-300 relative top-[-1px] w-1/2 mx-auto mb-4"></div>
-
-        {/* Nivel 2: Ramas */}
-        <div className="col-span-2 justify-self-center relative">
-            {/* Conector vertical pequeño arriba */}
-           <div className="absolute -top-4 left-1/2 w-0.5 h-4 bg-slate-300"></div>
-           <div className="bg-white border-2 border-amber-200 px-4 py-2 rounded-lg shadow-sm mb-4">
-             <span className="text-amber-600 font-bold text-xs block">NO</span>
-             ¿Tiene pedales?
-           </div>
-           
-           {/* Sub-rama izquierda */}
-           <div className="grid grid-cols-2 gap-2">
-              <div className="text-center">
-                 <div className="h-4 w-0.5 bg-slate-300 mx-auto"></div>
-                 <div className="bg-slate-100 p-2 rounded text-xs">Bicicleta</div>
-              </div>
-              <div className="text-center">
-                 <div className="h-4 w-0.5 bg-slate-300 mx-auto"></div>
-                 <div className="bg-slate-100 p-2 rounded text-xs">Patineta</div>
-              </div>
-           </div>
-        </div>
-
-        <div className="col-span-2 justify-self-center relative">
-           <div className="absolute -top-4 left-1/2 w-0.5 h-4 bg-slate-300"></div>
-           <div className="bg-white border-2 border-emerald-200 px-4 py-2 rounded-lg shadow-sm mb-4">
-             <span className="text-emerald-600 font-bold text-xs block">SÍ</span>
-             ¿Tiene 4 ruedas?
-           </div>
-
-            {/* Sub-rama derecha */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="text-center">
-                 <div className="h-4 w-0.5 bg-slate-300 mx-auto"></div>
-                 <div className="bg-slate-100 p-2 rounded text-xs">Moto</div>
-              </div>
-              <div className="text-center">
-                 <div className="h-4 w-0.5 bg-slate-300 mx-auto"></div>
-                 <div className="bg-emerald-100 border border-emerald-200 p-2 rounded text-xs font-bold text-emerald-800">Coche</div>
-              </div>
-           </div>
-        </div>
-
-      </div>
-      <div className="mt-8 text-center text-xs text-slate-500 bg-slate-50 p-2 rounded border border-slate-200">
-        <span className="font-bold">Lógica Simbólica:</span> El conocimiento se codifica explícitamente en reglas (IF-THEN).
-      </div>
-    </div>
-  );
-};
-
-// 3. Transición a ML - Dinámico
-const MLTransitionDiagram: React.FC = () => {
-  const data = [
-    { year: '1980', reglas: 80, datos: 10, eficacia: 20 },
-    { year: '1990', reglas: 85, datos: 30, eficacia: 35 },
-    { year: '2000', reglas: 90, datos: 55, eficacia: 50 },
-    { year: '2010', reglas: 60, datos: 120, eficacia: 85 },
-    { year: '2020', reglas: 40, datos: 180, eficacia: 98 },
-  ];
-
-  return (
-    <div className="h-full w-full grid grid-rows-[auto_1fr] gap-4">
-      <div className="text-xs text-slate-500 grid grid-cols-2 gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-slate-400 rounded-sm"></div>
-          <span>Enfoque Basado en Reglas (Manual)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-indigo-500 rounded-sm"></div>
-          <span>Volumen de Datos / ML</span>
-        </div>
-      </div>
-
-      <div className="h-64 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="colorDatos" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize: 12}} />
-            <YAxis hide />
-            <Tooltip 
-              contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-            />
-            <Area 
-              type="monotone" 
-              dataKey="datos" 
-              stroke="#6366f1" 
-              fillOpacity={1} 
-              fill="url(#colorDatos)" 
-              name="Datos & Cómputo"
-            />
-            <Line 
-              type="stepAfter" 
-              dataKey="reglas" 
-              stroke="#94a3b8" 
-              strokeWidth={2} 
-              strokeDasharray="5 5" 
-              name="Reglas Manuales"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className="bg-indigo-50 p-3 rounded-md text-xs text-indigo-900 border border-indigo-100">
-        <strong>Cambio de Paradigma:</strong> A medida que aumenta el volumen de datos y la capacidad de cómputo (2000-2020), los sistemas manuales pierden relevancia frente a los modelos que aprenden patrones automáticamente.
-      </div>
-    </div>
-  );
-};
-
-// --- Componente Principal de Layout (LessonLayout) ---
 
 const LessonLayout: React.FC<{
-  activeTab: string;
+  title: string;
   tabs: TabData[];
-  onTabChange: (id: string) => void;
-}> = ({ activeTab, tabs, onTabChange }) => {
-  const currentData = tabs.find((t) => t.id === activeTab) || tabs[0];
-
+  activeTabIndex: number;
+  onTabChange: (index: number) => void;
+  children: React.ReactNode;
+}> = ({ title, tabs, activeTabIndex, onTabChange, children }) => {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans p-4 md:p-8 grid grid-rows-[auto_auto_1fr] gap-6 max-w-7xl mx-auto">
-      
-      {/* 1. Header Global */}
-      <header className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-slate-200 pb-6">
-        <div className="bg-blue-600 p-3 rounded-lg text-white">
-          <BrainCircuit size={32} />
+    <div className="grid grid-rows-[auto_1fr] min-h-screen bg-slate-50 text-slate-800 font-sans">
+      {/* Header & Nav */}
+      <header className="grid grid-rows-[auto_auto] bg-slate-900 text-white shadow-md">
+        <div className="grid place-items-center p-6 border-b border-slate-700">
+          <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
         </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Desarrollo Histórico de la Inteligencia Artificial</h1>
-          
-        </div>
+        <nav className="grid place-items-center bg-slate-800">
+          <div className="grid grid-cols-3 w-full max-w-4xl">
+            {tabs.map((tab, index) => (
+              <button
+                key={tab.id}
+                onClick={() => onTabChange(index)}
+                className={`grid place-items-center py-4 px-2 text-sm md:text-base font-medium transition-colors border-b-4 ${
+                  activeTabIndex === index
+                    ? 'border-blue-500 bg-slate-700 text-blue-300'
+                    : 'border-transparent text-slate-300 hover:bg-slate-700/50 hover:text-white'
+                }`}
+              >
+                {tab.title}
+              </button>
+            ))}
+          </div>
+        </nav>
       </header>
 
-      {/* 2. Navegación (Tabs) */}
-      <nav className="grid grid-cols-3 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
-            className={`
-              flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-all
-              ${activeTab === tab.id 
-                ? 'bg-slate-800 text-white shadow-md' 
-                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'}
-            `}
-          >
-            {tab.icon}
-            <span className="hidden md:inline">{tab.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      {/* 3. Panel de Contenido Principal (Grid System) */}
-      <main className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* Columna Izquierda: Teoría y Contexto */}
-        <section className="lg:col-span-5 h-full">
-            <Card title="" className="h-full border-t-4 border-t-blue-500">
-                <div className="grid gap-4">
-                    <header>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-2">{currentData.title}</h2>
-                        <div className="h-1 w-20 bg-blue-500 rounded"></div>
-                    </header>
-                    
-                    <div className="prose prose-slate text-sm leading-relaxed text-slate-600">
-                        {currentData.description}
-                    </div>
-
-                 
-                </div>
-            </Card>
-        </section>
-
-        {/* Columna Derecha: Visualización (Diagram Render) */}
-        <section className="lg:col-span-7 h-full min-h-[400px]">
-            <Card title="" className="h-full bg-slate-50/50">
-                <div className="h-full flex flex-col">
-                   <div className="flex-1 rounded-lg bg-white border border-slate-200 p-6 shadow-inner flex items-center justify-center">
-                        {currentData.content}
-                   </div>
-                 
-                </div>
-            </Card>
-        </section>
-
+      {/* Main Content Area */}
+      <main className="grid p-4 md:p-8 w-full max-w-5xl mx-auto h-full">
+        {children}
       </main>
-
     </div>
   );
 };
 
-// --- App Principal ---
+// --- Componentes de Diagramas (Render) ---
 
-const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('timeline');
+const GrantDiagram: React.FC = () => {
+  const [step, setStep] = useState(0);
 
-  const tabsData: TabData[] = [
-    {
-      id: 'timeline',
-      label: '1956: El Origen',
-      icon: <History size={18} />,
-      title: 'El Nacimiento Formal',
-      description: (
-      <DivCarousel>
-        <div>
-          <p>
-            En 1956, durante la Conferencia de Dartmouth, se estableció oficialmente el campo de la Inteligencia Artificial. Investigadores como John McCarthy propusieron que las máquinas podrían simular aspectos de la inteligencia humana.
-          </p>
-
-          <p><strong>Características del periodo inicial:</strong></p>
-
-          <ul>
-            <li>Enfoque optimista sobre el progreso tecnológico.</li>
-            <li>Desarrollo de programas capaces de resolver problemas matemáticos.</li>
-            <li>Creación del término “Inteligencia Artificial”.</li>
-            <li>Investigación en razonamiento simbólico.</li>
-          </ul>
-
-          <p>
-            Este evento marcó el inicio formal de la IA como disciplina científica.
-          </p>
-        </div>
-      </DivCarousel>
-    ),
-      content: <TimelineDiagram />
-    },
-    {
-      id: 'symbolic',
-      label: 'Sistemas Simbólicos',
-      icon: <GitBranch size={18} />,
-      title: 'La Era Simbólica (GOFAI)',
-      description: (
-      <DivCarousel>
-        <div>
-          <p>
-            Durante las décadas posteriores, la IA se desarrolló principalmente bajo el paradigma simbólico. Los sistemas se basaban en reglas lógicas explícitas.
-          </p>
-
-          <p><strong>Características principales:</strong></p>
-
-          <ul>
-            <li>Representación del conocimiento mediante símbolos.</li>
-            <li>Sistemas expertos en medicina, ingeniería y finanzas.</li>
-            <li>Dependencia de reglas programadas manualmente.</li>
-            <li>Limitada capacidad de adaptación.</li>
-          </ul>
-
-          <p>
-            Aunque estos sistemas lograron avances importantes, su rigidez dificultó su escalabilidad.
-          </p>
-
-        </div>
-      </DivCarousel>
-    ),
-      content: <DecisionTreeDiagram />
-    },
-    {
-      id: 'ml',
-      label: 'Transición a ML',
-      icon: <Database size={18} />,
-      title: 'Aprendizaje Automático',
-      description: (
-      <DivCarousel>
-        <div>
-          <p>
-            El incremento de la potencia computacional y la disponibilidad de grandes volúmenes de datos impulsaron un cambio de paradigma hacia el aprendizaje automático.
-          </p>
-
-          <p><strong>Factores determinantes:</strong></p>
-
-          <ul>
-            <li>Big Data.</li>
-            <li>Mayor capacidad de procesamiento.</li>
-            <li>Nuevos algoritmos estadísticos.</li>
-            <li>Redes neuronales profundas.</li>
-          </ul>
-
-          <p>
-            Este enfoque permitió que los sistemas aprendieran patrones directamente a partir de datos, reduciendo la dependencia de reglas explícitas.
-          </p>
-        </div>
-      </DivCarousel>
-    ),
-      content: <MLTransitionDiagram />
-    }
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStep((prev) => (prev + 1) % 3);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <LessonLayout 
-      activeTab={activeTab} 
-      tabs={tabsData} 
-      onTabChange={setActiveTab} 
-    />
+    <div className="grid grid-rows-[auto_1fr] gap-6 w-full h-full p-6 bg-slate-50 rounded-xl">
+      <div className="grid place-items-center">
+        <span className="bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-sm font-semibold tracking-wide border border-blue-200">
+          Animación en tiempo real: Asignación de Privilegios
+        </span>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4 place-items-center relative">
+        {/* Admin Node */}
+        <div className="grid grid-rows-[auto_auto] place-items-center gap-2">
+          <div className="grid place-items-center w-20 h-20 bg-slate-800 rounded-full text-white shadow-lg z-10">
+            <ShieldCheck size={40} />
+          </div>
+          <span className="font-bold text-slate-700 text-center">Administrador<br/><span className="text-xs font-normal text-slate-500">(GRANT)</span></span>
+        </div>
+
+        {/* Animation Path */}
+        <div className="grid w-full relative h-20 place-items-center">
+          <div className="w-full h-2 bg-slate-300 rounded-full absolute top-1/2 -translate-y-1/2 overflow-hidden">
+            <div className={`h-full bg-blue-500 transition-all duration-1000 ${step === 0 ? 'w-0' : step === 1 ? 'w-1/2' : 'w-full'}`}></div>
+          </div>
+          
+          <div className={`absolute top-1/2 -translate-y-1/2 transition-all duration-1000 grid place-items-center w-10 h-10 bg-yellow-400 rounded-full shadow border-2 border-white z-20 ${
+            step === 0 ? 'left-0 opacity-0' : step === 1 ? 'left-1/2 -translate-x-1/2 opacity-100' : 'left-full -translate-x-full opacity-0'
+          }`}>
+            <KeyRound size={20} className="text-yellow-900" />
+          </div>
+        </div>
+
+        {/* User Node */}
+        <div className="grid grid-rows-[auto_auto] place-items-center gap-2">
+          <div className={`grid place-items-center w-20 h-20 rounded-full shadow-lg z-10 transition-colors duration-500 ${step === 2 ? 'bg-green-500 text-white' : 'bg-slate-200 text-slate-400'}`}>
+            <User size={40} />
+          </div>
+          <span className="font-bold text-slate-700 text-center">usuario1<br/><span className="text-xs font-normal text-slate-500">(estudiantes)</span></span>
+        </div>
+      </div>
+      
+      {/* DB Status */}
+      <div className="grid place-items-center mt-8">
+         <div className="grid grid-cols-[auto_1fr] place-items-center gap-4 bg-white p-4 rounded-lg shadow border border-slate-200 w-full max-w-sm">
+            <Database size={32} className={step === 2 ? 'text-green-500' : 'text-slate-400'} />
+            <div className="grid grid-rows-2 w-full">
+              <span className="font-bold text-slate-700">Estado de la Base de Datos</span>
+              <span className={`text-sm ${step === 2 ? 'text-green-600 font-medium' : 'text-slate-500'}`}>
+                {step === 2 ? '✓ Permiso SELECT registrado' : 'Esperando asignación...'}
+              </span>
+            </div>
+         </div>
+      </div>
+    </div>
   );
 };
 
-export default App;
+const RevokeDiagram: React.FC = () => {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStep((prev) => (prev + 1) % 3);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="grid grid-rows-[auto_1fr] gap-6 w-full h-full p-6 bg-slate-50 rounded-xl">
+      <div className="grid place-items-center">
+        <span className="bg-red-100 text-red-800 px-4 py-1 rounded-full text-sm font-semibold tracking-wide border border-red-200">
+          Animación en tiempo real: Revocación de Privilegios
+        </span>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4 place-items-center relative">
+        {/* Admin Node */}
+        <div className="grid grid-rows-[auto_auto] place-items-center gap-2">
+          <div className="grid place-items-center w-20 h-20 bg-slate-800 rounded-full text-white shadow-lg z-10">
+            <ShieldAlert size={40} />
+          </div>
+          <span className="font-bold text-slate-700 text-center">Administrador<br/><span className="text-xs font-normal text-slate-500">(REVOKE)</span></span>
+        </div>
+
+        {/* Animation Path */}
+        <div className="grid w-full relative h-20 place-items-center">
+          <div className="w-full h-2 rounded-full absolute top-1/2 -translate-y-1/2 overflow-hidden bg-slate-300">
+            <div className={`h-full transition-all duration-1000 ${step === 0 ? 'bg-green-500 w-full' : step === 1 ? 'bg-red-400 w-1/2 float-right' : 'bg-slate-300 w-0'}`}></div>
+          </div>
+          
+          <div className={`absolute top-1/2 -translate-y-1/2 transition-all duration-1000 grid place-items-center w-10 h-10 bg-slate-700 rounded-full shadow border-2 border-white z-20 ${
+            step === 0 ? 'left-full -translate-x-full opacity-100' : step === 1 ? 'left-1/2 -translate-x-1/2 opacity-100' : 'left-0 opacity-0'
+          }`}>
+            <Trash2 size={20} className="text-white" />
+          </div>
+        </div>
+
+        {/* User Node */}
+        <div className="grid grid-rows-[auto_auto] place-items-center gap-2">
+          <div className={`grid place-items-center w-20 h-20 rounded-full shadow-lg z-10 transition-colors duration-500 ${step === 0 ? 'bg-green-500 text-white' : 'bg-red-100 text-red-500 border-2 border-red-500'}`}>
+            <User size={40} />
+          </div>
+          <span className="font-bold text-slate-700 text-center">usuario1<br/><span className="text-xs font-normal text-slate-500">(estudiantes)</span></span>
+        </div>
+      </div>
+      
+      {/* DB Status */}
+      <div className="grid place-items-center mt-8">
+         <div className="grid grid-cols-[auto_1fr] place-items-center gap-4 bg-white p-4 rounded-lg shadow border border-slate-200 w-full max-w-sm">
+            <Database size={32} className={step === 0 ? 'text-green-500' : 'text-red-500'} />
+            <div className="grid grid-rows-2 w-full">
+              <span className="font-bold text-slate-700">Estado de la Base de Datos</span>
+              <span className={`text-sm ${step === 0 ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}`}>
+                {step === 0 ? '✓ Acceso INSERT activo' : '✗ Acceso INSERT denegado'}
+              </span>
+            </div>
+         </div>
+      </div>
+    </div>
+  );
+};
+
+const TypesDiagram: React.FC = () => {
+  const privileges = [
+    { name: 'SELECT', desc: 'Consultar datos', icon: <Search size={24} />, color: 'text-blue-600', bg: 'bg-blue-100', border: 'border-blue-500' },
+    { name: 'INSERT', desc: 'Agregar registros', icon: <PlusCircle size={24} />, color: 'text-green-600', bg: 'bg-green-100', border: 'border-green-500' },
+    { name: 'UPDATE', desc: 'Modificar registros', icon: <Edit size={24} />, color: 'text-yellow-600', bg: 'bg-yellow-100', border: 'border-yellow-500' },
+    { name: 'DELETE', desc: 'Eliminar registros', icon: <Trash2 size={24} />, color: 'text-red-600', bg: 'bg-red-100', border: 'border-red-500' },
+    { name: 'CREATE', desc: 'Crear objetos (DDL)', icon: <FileCode2 size={24} />, color: 'text-purple-600', bg: 'bg-purple-100', border: 'border-purple-500' },
+    { name: 'ALTER', desc: 'Modificar estructuras', icon: <Settings size={24} />, color: 'text-orange-600', bg: 'bg-orange-100', border: 'border-orange-500' },
+  ];
+
+  return (
+    <div className="grid grid-rows-[auto_1fr] gap-8 w-full h-full p-6 bg-slate-50 rounded-xl">
+      <div className="grid place-items-center">
+        <div className="grid grid-cols-[auto_1fr] place-items-center gap-3 bg-slate-800 text-white px-6 py-3 rounded-xl shadow-lg">
+          <Server size={28} />
+          <span className="text-lg font-bold">Arquitectura de Mínimo Privilegio</span>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+        {privileges.map((priv) => (
+          <div key={priv.name} className={`grid grid-cols-[auto_1fr] place-items-center gap-4 bg-white p-4 rounded-lg shadow-sm border-l-4 ${priv.border} hover:shadow-md transition-shadow`}>
+            <div className={`grid place-items-center w-12 h-12 rounded-full ${priv.bg} ${priv.color}`}>
+              {priv.icon}
+            </div>
+            <div className="grid w-full">
+              <span className="font-bold text-slate-800 tracking-wide">{priv.name}</span>
+              <span className="text-sm text-slate-500">{priv.desc}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// --- Datos de la Lección ---
+
+const lessonSections: SectionData[] = [
+  {
+    id: 'grant',
+    tabTitle: '1. Concesión (GRANT)',
+    diagramTitle: 'Otorgar Privilegios con GRANT',
+    diagramDescription: (
+      <div className="grid gap-4 text-slate-600 leading-relaxed">
+        <p>
+          Los Sistemas de Gestión de Bases de Datos permiten asignar permisos a los usuarios mediante la instrucción <strong className="text-blue-600 font-mono">GRANT</strong>.
+          Esta instrucción define qué operaciones puede realizar un usuario sobre un objeto específico.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-100 p-4 rounded border border-slate-200 grid gap-2">
+            <span className="font-bold text-slate-700 text-sm">Sintaxis General:</span>
+            <pre className="text-sm bg-slate-800 text-slate-100 p-3 rounded font-mono overflow-x-auto">
+GRANT privilegio{'\n'}ON objeto{'\n'}TO usuario;
+            </pre>
+          </div>
+          <div className="bg-slate-100 p-4 rounded border border-slate-200 grid gap-2">
+            <span className="font-bold text-slate-700 text-sm">Ejemplo Práctico:</span>
+            <pre className="text-sm bg-slate-800 text-slate-100 p-3 rounded font-mono overflow-x-auto text-blue-300">
+GRANT SELECT{'\n'}ON estudiantes{'\n'}TO usuario1;
+            </pre>
+          </div>
+        </div>
+        <p className="text-sm border-l-4 border-blue-500 pl-4 py-1 bg-blue-50/50">
+          En el ejemplo, el <strong>usuario1</strong> ahora puede consultar (SELECT) información en la tabla <strong>estudiantes</strong>. Estos privilegios pueden aplicar a tablas, vistas, procedimientos o bases de datos completas.
+        </p>
+      </div>
+    ),
+    renderDiagram: () => <GrantDiagram />
+  },
+  {
+    id: 'revoke',
+    tabTitle: '2. Revocación (REVOKE)',
+    diagramTitle: 'Retirar Privilegios con REVOKE',
+    diagramDescription: (
+      <div className="grid gap-4 text-slate-600 leading-relaxed">
+        <p>
+          La instrucción <strong className="text-red-600 font-mono">REVOKE</strong> permite retirar permisos que fueron previamente otorgados a un usuario. 
+          Este mecanismo es crucial para ajustar los permisos cuando cambian las responsabilidades de los usuarios.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-100 p-4 rounded border border-slate-200 grid gap-2">
+            <span className="font-bold text-slate-700 text-sm">Sintaxis General:</span>
+            <pre className="text-sm bg-slate-800 text-slate-100 p-3 rounded font-mono overflow-x-auto">
+REVOKE privilegio{'\n'}ON objeto{'\n'}FROM usuario;
+            </pre>
+          </div>
+          <div className="bg-slate-100 p-4 rounded border border-slate-200 grid gap-2">
+            <span className="font-bold text-slate-700 text-sm">Ejemplo Práctico:</span>
+            <pre className="text-sm bg-slate-800 text-slate-100 p-3 rounded font-mono overflow-x-auto text-red-300">
+REVOKE INSERT{'\n'}ON estudiantes{'\n'}FROM usuario1;
+            </pre>
+          </div>
+        </div>
+        <p className="text-sm border-l-4 border-red-500 pl-4 py-1 bg-red-50/50">
+          Después de ejecutar esta instrucción, el usuario ya no podrá insertar nuevos registros en la tabla indicada, perdiendo acceso inmediatamente.
+        </p>
+      </div>
+    ),
+    renderDiagram: () => <RevokeDiagram />
+  },
+  {
+    id: 'types',
+    tabTitle: '3. Tipos de Privilegios',
+    diagramTitle: 'Clasificación de Privilegios en SQL',
+    diagramDescription: (
+      <div className="grid gap-4 text-slate-600 leading-relaxed">
+        <p>
+          Los privilegios determinan de manera granular las operaciones exactas que un usuario puede ejecutar en la base de datos.
+          Se dividen principalmente en operaciones de manipulación de datos (DML) y definición de datos (DDL).
+        </p>
+        <div className="grid grid-rows-[auto_auto] gap-2 bg-blue-50 border border-blue-200 p-4 rounded-lg">
+          <span className="font-bold text-blue-900 grid grid-cols-[auto_1fr] gap-2 place-items-center">
+             <ShieldCheck size={18} /> El Principio de Mínimo Privilegio
+          </span>
+          <p className="text-sm text-blue-800">
+            La correcta asignación de estos privilegios permite mantener una arquitectura segura, donde cada usuario posee <strong>únicamente</strong> los permisos estrictamente necesarios para realizar su trabajo.
+          </p>
+        </div>
+      </div>
+    ),
+    renderDiagram: () => <TypesDiagram />
+  }
+];
+
+// --- Aplicación Principal ---
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState(0);
+
+  const tabs: TabData[] = lessonSections.map(section => ({
+    id: section.id,
+    title: section.tabTitle
+  }));
+
+  const currentSection = lessonSections[activeTab];
+
+  return (
+    <LessonLayout
+      title="Gestión de Privilegios en Bases de Datos"
+      tabs={tabs}
+      activeTabIndex={activeTab}
+      onTabChange={setActiveTab}
+    >
+      <Card className="grid grid-rows-[auto_auto_1fr] gap-8 h-full">
+        {/* Diagram Title */}
+        <div className="grid border-b border-slate-100 pb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
+            {currentSection.diagramTitle}
+          </h2>
+        </div>
+
+        {/* Diagram Description */}
+        <div className="grid">
+          {currentSection.diagramDescription}
+        </div>
+
+        {/* Diagram Render */}
+        <div className="grid place-items-center w-full min-h-[400px] border-2 border-dashed border-slate-200 rounded-xl overflow-hidden bg-white">
+          {currentSection.renderDiagram()}
+        </div>
+      </Card>
+    </LessonLayout>
+  );
+}

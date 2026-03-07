@@ -1,457 +1,438 @@
-import React, { useState } from 'react';
-import { 
-  Network, 
-  ArrowRight, 
-  ShieldAlert, 
-  Cpu, 
-  Briefcase, 
-  HeartPulse, 
-  GraduationCap, 
-  Coins, 
-  Megaphone, 
-  ChevronDown, 
-  ChevronUp,
-  BrainCircuit,
-  Zap,
-  UserCheck,
-  Settings
-} from 'lucide-react';
-import DivCarousel from '../assets/DivCarousel';
+import React, { useState,  } from 'react';
+import { Shield, Database, User, Lock, Key, CheckCircle, XCircle, Users, Activity, Settings, Server } from 'lucide-react';
 
-// --- Types & Interfaces ---
-
-type TabId = 'sectores' | 'beneficios' | 'retos';
-
-interface TabData {
-  id: TabId;
+// --- Tipos e Interfaces ---
+interface Tab {
+  id: string;
   label: string;
-  icon: React.ElementType;
-  title: string;
-  description: React.ReactNode;
 }
 
-// --- Data Definitions ---
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+}
 
-const TABS: TabData[] = [
-  {
-    id: 'sectores',
-    label: 'Mapa de Sectores',
-    icon: Network,
-    title: 'Principales Áreas de Aplicación',
-    description: (
-      <DivCarousel>
-        <div>
-          <p>
-            La IA se utiliza en diversos sectores productivos y sociales:
-          </p>
+interface LessonLayoutProps {
+  title: string;
+  tabs: Tab[];
+  activeTab: string;
+  onTabChange: (id: string) => void;
+  children: React.ReactNode;
+}
 
-          <ul>
-            <li><strong>Salud:</strong> Diagnóstico asistido por imagen.</li>
-            <li><strong>Finanzas:</strong> Detección de fraude.</li>
-            <li><strong>Educación:</strong> Sistemas de aprendizaje adaptativo.</li>
-            <li><strong>Transporte:</strong> Vehículos autónomos.</li>
-            <li><strong>Comercio electrónico:</strong> Recomendaciones personalizadas.</li>
-          </ul>
+// --- Componentes Base ---
 
-          <p>
-            Cada aplicación combina datos sectoriales con modelos entrenados.
-          </p>
-
-        </div>
-      </DivCarousel>
-    ),
-  },
-  {
-    id: 'beneficios',
-    label: 'Causa y Efecto',
-    icon: Zap,
-    title: 'Beneficios de la IA',
-    description: (
-      <DivCarousel>
-        <div>
-          <p>
-            La adopción de IA permite:
-          </p>
-
-          <ul>
-            <li>Automatizar procesos repetitivos.</li>
-            <li>Incrementar eficiencia.</li>
-            <li>Reducir errores humanos.</li>
-            <li>Personalizar servicios.</li>
-            <li>Optimizar decisiones mediante análisis de datos.</li>
-          </ul>
-
-          <p>
-            Su valor radica en la capacidad de procesar información a gran escala.
-          </p>
-
-        </div>
-      </DivCarousel>
-    ),
-  },
-  {
-    id: 'retos',
-    label: 'Retos Interactivos',
-    icon: ShieldAlert,
-    title: 'Desafíos de la Implementación',
-    description:(
-      <DivCarousel>
-        <div>
-          <p>
-            La expansión de la IA también plantea desafíos relevantes:
-          </p>
-
-          <ul>
-            <li>Sesgos en los datos.</li>
-            <li>Problemas de privacidad.</li>
-            <li>Impacto en el empleo.</li>
-            <li>Necesidad de regulación.</li>
-            <li>Uso ético responsable.</li>
-          </ul>
-
-          <p>
-            Estos retos requieren análisis técnico y reflexión social.
-          </p>
-
-        
-        </div>
-      </DivCarousel>
-    ),
-  },
-];
-
-// --- Sub-Components ---
-
-const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden ${className}`}>
-    {children}
-  </div>
-);
-
-const SectionTitle: React.FC<{ title: string; icon: React.ElementType }> = ({ title, icon: Icon }) => (
-  <div className="grid grid-flow-col auto-cols-max gap-3 items-center mb-4">
-    <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
-      <Icon size={24} />
-    </div>
-    <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
-  </div>
-);
-
-// --- Diagram Components ---
-
-// 1. Sector Map Diagram (Static Grid Layout)
-const SectorMapDiagram: React.FC = () => {
+const Card: React.FC<CardProps> = ({ children, className = '' }) => {
   return (
-    <div className="w-full h-full min-h-[400px] p-8 bg-slate-50 rounded-lg border border-slate-100 relative grid place-items-center">
-      {/* Radial Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative w-full max-w-4xl">
-        
-        {/* Connecting Lines (Simulated with absolute positioning for visual flair behind grid) */}
-        <div className="absolute inset-0 hidden md:block pointer-events-none">
-          <svg className="w-full h-full absolute top-0 left-0" style={{ zIndex: 0 }}>
-            <line x1="50%" y1="50%" x2="16%" y2="20%" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="5,5" />
-            <line x1="50%" y1="50%" x2="84%" y2="20%" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="5,5" />
-            <line x1="50%" y1="50%" x2="16%" y2="80%" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="5,5" />
-            <line x1="50%" y1="50%" x2="84%" y2="80%" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="5,5" />
-            <line x1="50%" y1="50%" x2="50%" y2="15%" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="5,5" />
-          </svg>
-        </div>
-
-        {/* Top Node */}
-        <div className="col-start-1 md:col-start-2 grid justify-items-center z-10">
-          <div className="bg-white p-4 rounded-xl shadow-md border-b-4 border-emerald-500 w-40 text-center transform transition-transform hover:-translate-y-1">
-            <HeartPulse className="mx-auto text-emerald-500 mb-2" />
-            <h4 className="font-bold text-slate-700">Salud</h4>
-            <p className="text-xs text-slate-500 mt-1">Diagnóstico & Robótica</p>
-          </div>
-        </div>
-
-        {/* Left Top Node */}
-        <div className="md:justify-self-end grid justify-items-center z-10">
-          <div className="bg-white p-4 rounded-xl shadow-md border-b-4 border-blue-500 w-40 text-center transform transition-transform hover:-translate-y-1">
-            <Coins className="mx-auto text-blue-500 mb-2" />
-            <h4 className="font-bold text-slate-700">Finanzas</h4>
-            <p className="text-xs text-slate-500 mt-1">Detección de Fraude</p>
-          </div>
-        </div>
-
-        {/* Center Node (Core) */}
-        <div className="grid place-items-center z-20 my-4 md:my-0">
-          <div className="bg-indigo-600 text-white p-8 rounded-full shadow-xl shadow-indigo-200 w-40 h-40 grid place-items-center border-4 border-white ring-4 ring-indigo-50">
-            <div className="text-center">
-              <BrainCircuit size={40} className="mx-auto mb-1" />
-              <h3 className="font-bold text-lg leading-tight">Inteligencia<br/>Artificial</h3>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Top Node */}
-        <div className="md:justify-self-start grid justify-items-center z-10">
-          <div className="bg-white p-4 rounded-xl shadow-md border-b-4 border-amber-500 w-40 text-center transform transition-transform hover:-translate-y-1">
-            <GraduationCap className="mx-auto text-amber-500 mb-2" />
-            <h4 className="font-bold text-slate-700">Educación</h4>
-            <p className="text-xs text-slate-500 mt-1">Tutores Virtuales</p>
-          </div>
-        </div>
-
-        {/* Left Bottom Node */}
-        <div className="md:justify-self-end grid justify-items-center z-10">
-           <div className="bg-white p-4 rounded-xl shadow-md border-b-4 border-purple-500 w-40 text-center transform transition-transform hover:-translate-y-1">
-            <Megaphone className="mx-auto text-purple-500 mb-2" />
-            <h4 className="font-bold text-slate-700">Marketing</h4>
-            <p className="text-xs text-slate-500 mt-1">Segmentación</p>
-          </div>
-        </div>
-
-        {/* Bottom Node */}
-        <div className="col-start-1 md:col-start-2 grid justify-items-center z-10">
-           <div className="bg-white p-4 rounded-xl shadow-md border-b-4 border-orange-500 w-40 text-center transform transition-transform hover:-translate-y-1">
-            <Briefcase className="mx-auto text-orange-500 mb-2" />
-            <h4 className="font-bold text-slate-700">Transporte</h4>
-            <p className="text-xs text-slate-500 mt-1">Conducción Autónoma</p>
-          </div>
-        </div>
-
-      </div>
+    <div className={`bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden ${className}`}>
+      {children}
     </div>
   );
 };
 
-// 2. Cause-Effect Diagram (Linear Grid Layout)
-const BenefitsDiagram: React.FC = () => {
+const LessonLayout: React.FC<LessonLayoutProps> = ({ title, tabs, activeTab, onTabChange, children }) => {
   return (
-    <div className="w-full p-6 md:p-12 bg-gradient-to-br from-slate-50 to-indigo-50/30 rounded-lg border border-slate-100">
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_2fr] gap-6 items-center">
+    <div className="min-h-screen bg-slate-50 grid grid-rows-[auto_auto_1fr] font-sans text-slate-800">
+      {/* Header con Title */}
+      <header className="bg-slate-900 text-white p-6 grid place-items-center md:place-items-start shadow-md">
+        <h1 className="text-2xl font-bold grid grid-cols-[auto_1fr] gap-3 items-center">
+          <Shield className="w-8 h-8 text-blue-400" />
+          {title}
+        </h1>
+      </header>
+
+      {/* Nav con Tabs (Grid Layout) */}
+      <nav className="bg-white border-b border-slate-200 px-6 grid">
+        <div className="grid grid-flow-col auto-cols-max gap-2 overflow-x-auto">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className={`px-4 py-4 text-sm font-medium border-b-2 transition-colors grid place-items-center ${
+                activeTab === tab.id
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* Main Content Area */}
+      <main className="p-6 md:p-8 grid items-start">
+        <div className="max-w-7xl w-full mx-auto">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+// --- Componentes de Diagramas ---
+
+// Diagrama 1: Capas de Seguridad (Estático)
+const SecurityLayersDiagram: React.FC = () => {
+  return (
+    <div className="grid grid-rows-[auto_1fr] gap-6 p-6 bg-slate-50 h-full w-full rounded-b-lg border-t border-slate-100">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center justify-items-center relative">
+        {/* Conexiones visuales usando Grid (simulando líneas) */}
+        <div className="hidden md:block absolute top-1/2 left-1/6 right-1/6 h-1 bg-slate-200 -z-10 translate-y-[-50%]"></div>
         
-        {/* Cause */}
-        <div className="h-full">
-          <div className="bg-white p-6 rounded-xl shadow-lg border-l-8 border-indigo-600 h-full grid content-center">
-            <div className="grid gap-4 justify-items-center text-center">
-              <div className="p-4 bg-indigo-50 rounded-full text-indigo-600">
-                <Cpu size={32} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-slate-800">Implementación de IA</h3>
-                <p className="text-slate-500 text-sm mt-2">Integración de ML, NLP y Visión por Computadora</p>
-              </div>
-            </div>
-          </div>
+        {/* Entidad 1: Usuarios */}
+        <div className="bg-white p-4 rounded shadow grid gap-2 justify-items-center border-2 border-slate-200 z-10 w-32">
+          <Users className="w-10 h-10 text-slate-600" />
+          <span className="text-sm font-semibold">Usuarios</span>
         </div>
 
-        {/* Connector */}
-        <div className="grid justify-items-center text-slate-300">
-           <ArrowRight size={48} className="hidden md:block" />
-           <ChevronDown size={48} className="block md:hidden" />
+        {/* Entidad 2: Capa de Seguridad */}
+        <div className="bg-blue-100 p-4 rounded shadow grid gap-2 justify-items-center border-2 border-blue-400 z-10 w-40">
+          <Shield className="w-12 h-12 text-blue-600" />
+          <span className="text-sm font-bold text-blue-800 text-center">SGBD<br/>Seguridad</span>
         </div>
 
-        {/* Effects */}
-        <div className="grid grid-rows-3 gap-4">
-          {/* Effect 1 */}
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-100 grid grid-cols-[auto_1fr] gap-4 items-center hover:shadow-md transition-shadow">
-            <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600">
-              <Settings size={20} />
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-700">Eficiencia Operativa</h4>
-              <p className="text-xs text-slate-500">Reducción de tiempos de proceso y errores humanos.</p>
-            </div>
-          </div>
+        {/* Entidad 3: Base de Datos */}
+        <div className="bg-white p-4 rounded shadow grid gap-2 justify-items-center border-2 border-slate-200 z-10 w-32">
+          <Database className="w-10 h-10 text-emerald-600" />
+          <span className="text-sm font-semibold text-center">Datos Críticos</span>
+        </div>
+      </div>
 
-          {/* Effect 2 */}
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-100 grid grid-cols-[auto_1fr] gap-4 items-center hover:shadow-md transition-shadow">
-            <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
-              <BrainCircuit size={20} />
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-700">Automatización Inteligente</h4>
-              <p className="text-xs text-slate-500">Ejecución autónoma de tareas repetitivas complejas.</p>
-            </div>
-          </div>
-
-          {/* Effect 3 */}
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-100 grid grid-cols-[auto_1fr] gap-4 items-center hover:shadow-md transition-shadow">
-            <div className="bg-purple-100 p-2 rounded-lg text-purple-600">
-              <UserCheck size={20} />
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-700">Hiper-Personalización</h4>
-              <p className="text-xs text-slate-500">Experiencias adaptadas al usuario en tiempo real.</p>
-            </div>
-          </div>
+      <div className="grid grid-cols-2 gap-4 text-xs">
+        <div className="bg-red-50 text-red-700 p-3 rounded grid grid-cols-[auto_1fr] gap-2 items-start">
+          <XCircle className="w-4 h-4" />
+          <span>Previene accesos no autorizados, modificación, pérdida o divulgación.</span>
+        </div>
+        <div className="bg-emerald-50 text-emerald-700 p-3 rounded grid grid-cols-[auto_1fr] gap-2 items-start">
+          <CheckCircle className="w-4 h-4" />
+          <span>Protege datos financieros, registros y clientes.</span>
         </div>
       </div>
     </div>
   );
 };
 
-// 3. Interactive Challenges Diagram (Accordion Grid)
-const ChallengesDiagram: React.FC = () => {
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+// Diagrama 2: Proceso de Autorización (Dinámico)
+const AuthorizationDiagram: React.FC = () => {
+  const [role, setRole] = useState<'Administrador' | 'Analista' | 'Operador'>('Analista');
+  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
 
-  const challenges = [
-    {
-      id: 1,
-      title: "Ética y Sesgo",
-      icon: ShieldAlert,
-      color: "text-rose-600 bg-rose-50",
-      content: "Los algoritmos pueden perpetuar discriminaciones históricas si se entrenan con datos sesgados. Ejemplo: Sistemas de contratación que favorecen ciertos perfiles demográficos injustamente."
-    },
-    {
-      id: 2,
-      title: "Privacidad de Datos",
-      icon: Network,
-      color: "text-amber-600 bg-amber-50",
-      content: "La necesidad de grandes volúmenes de datos para entrenar modelos choca con el derecho a la privacidad. Reto: Anonimizar datos médicos o financieros sin perder utilidad."
-    },
-    {
-      id: 3,
-      title: "Desplazamiento Laboral",
-      icon: Briefcase,
-      color: "text-cyan-600 bg-cyan-50",
-      content: "La automatización de tareas cognitivas amenaza ciertos roles administrativos. Reto: Reskilling masivo de la fuerza laboral para trabajar junto a la IA."
-    },
-    {
-      id: 4,
-      title: "Caja Negra (Explicabilidad)",
-      icon: BrainCircuit,
-      color: "text-indigo-600 bg-indigo-50",
-      content: "Muchos modelos de Deep Learning son inescrutables. No sabemos 'por qué' toman una decisión, lo cual es crítico en medicina o justicia."
+  const simulateAccess = () => {
+    if (step !== 0) return;
+    setStep(1);
+    setTimeout(() => setStep(2), 1000);
+    setTimeout(() => setStep(3), 2200);
+    setTimeout(() => setStep(0), 4500);
+  };
+
+  const getRoleIcon = () => {
+    switch(role) {
+      case 'Administrador': return <Settings className="w-8 h-8 text-purple-600" />;
+      case 'Analista': return <Activity className="w-8 h-8 text-blue-600" />;
+      case 'Operador': return <Server className="w-8 h-8 text-orange-600" />;
     }
-  ];
+  };
 
-  const handleToggle = (id: number) => {
-    setExpandedId(expandedId === id ? null : id);
+  const getResult = () => {
+    if (step < 3) return null;
+    switch(role) {
+      case 'Administrador': return <span className="text-purple-600 font-bold">Crear / Gestionar Usuarios (PERMITIDO)</span>;
+      case 'Analista': return <span className="text-blue-600 font-bold">Consultar Información (PERMITIDO)</span>;
+      case 'Operador': return <span className="text-orange-600 font-bold">Insertar / Actualizar (PERMITIDO)</span>;
+    }
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {challenges.map((item) => (
-        <div 
-          key={item.id}
-          onClick={() => handleToggle(item.id)}
-          className={`
-            bg-white rounded-xl border transition-all duration-300 cursor-pointer overflow-hidden
-            ${expandedId === item.id ? 'border-indigo-500 shadow-md ring-1 ring-indigo-200 col-span-1 sm:col-span-2' : 'border-slate-200 hover:border-indigo-300'}
-          `}
+    <div className="grid grid-rows-[auto_1fr] gap-4 p-6 bg-slate-50 h-full w-full rounded-b-lg border-t border-slate-100">
+      {/* Controles */}
+      <div className="grid grid-cols-[1fr_auto] gap-4 items-center bg-white p-3 rounded shadow-sm border border-slate-200">
+        <div className="grid grid-cols-[auto_1fr] gap-2 items-center">
+          <span className="text-sm font-semibold">Seleccionar Rol:</span>
+          <select 
+            className="border border-slate-300 rounded p-1 text-sm outline-none"
+            value={role}
+            onChange={(e) => setRole(e.target.value as any)}
+            disabled={step !== 0}
+          >
+            <option value="Administrador">Administrador</option>
+            <option value="Analista">Analista</option>
+            <option value="Operador">Operador</option>
+          </select>
+        </div>
+        <button 
+          className={`px-4 py-2 rounded text-sm font-bold text-white transition-colors ${step === 0 ? 'bg-blue-600 hover:bg-blue-700' : 'bg-slate-400 cursor-not-allowed'}`}
+          onClick={simulateAccess}
+          disabled={step !== 0}
         >
-          <div className="p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
-            <div className={`p-3 rounded-lg ${item.color}`}>
-              <item.icon size={24} />
-            </div>
-            <h3 className="font-bold text-slate-800 text-lg">{item.title}</h3>
-            <div className="text-slate-400">
-              {expandedId === item.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-            </div>
-          </div>
-          
-          <div className={`
-            grid transition-all duration-300 ease-in-out bg-slate-50
-            ${expandedId === item.id ? 'grid-rows-[1fr] opacity-100 p-4 border-t border-slate-100' : 'grid-rows-[0fr] opacity-0'}
-          `}>
-            <div className="overflow-hidden">
-              <p className="text-slate-600 leading-relaxed">
-                {item.content}
-              </p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+          {step === 0 ? 'Simular Operación' : 'Simulando...'}
+        </button>
+      </div>
 
-// --- Main Layout Component ---
-
-const LessonLayout: React.FC<{ 
-  activeTab: TabId; 
-  onTabChange: (id: TabId) => void;
-}> = ({ activeTab, onTabChange }) => {
-  
-  const currentData = TABS.find(t => t.id === activeTab)!;
-  const CurrentIcon = currentData.icon;
-
-  return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-800 grid grid-rows-[auto_1fr] gap-0">
-      
-      {/* 1. Header Area */}
-      <header className="bg-white border-b border-slate-200 top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 grid grid-cols-[auto_1fr] items-center gap-4">
-          <div className="bg-indigo-600 p-2 rounded-lg">
-            <BrainCircuit className="text-white" size={28} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-none">Aplicaciones y Retos de la Inteligencia Artificial</h1>
-            
-          </div>
-        </div>
+      {/* Visualización */}
+      <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] gap-2 items-center justify-items-center mt-4">
         
-        {/* Navigation Tabs (Grid based) */}
-        <nav className="max-w-6xl mx-auto px-4 mt-2">
-          <div className="grid grid-cols-3 gap-1 md:gap-4">
-            {TABS.map((tab) => {
-              const isActive = activeTab === tab.id;
-              const TabIcon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className={`
-                    py-3 px-2 md:px-4 text-sm font-medium rounded-t-lg transition-all duration-200
-                    grid grid-flow-col gap-2 items-center justify-center
-                    ${isActive 
-                      ? 'bg-slate-100 text-indigo-700 border-b-2 border-indigo-600' 
-                      : 'bg-white text-slate-500 hover:text-indigo-600 hover:bg-slate-50 border-b-2 border-transparent'}
-                  `}
-                >
-                  <TabIcon size={18} className={isActive ? "stroke-2" : "stroke-1"} />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                </button>
-              );
-            })}
+        {/* Paso 1: Usuario */}
+        <div className={`grid gap-2 justify-items-center transition-opacity ${step >= 1 ? 'opacity-100' : 'opacity-50'}`}>
+          <div className="bg-white p-3 rounded-full shadow-md border border-slate-200">
+            {getRoleIcon()}
           </div>
-        </nav>
-      </header>
+          <span className="text-xs font-bold">{role}</span>
+          {step === 1 && <span className="text-[10px] text-blue-500 animate-pulse">Solicitando...</span>}
+        </div>
 
-      {/* 2. Main Content Area */}
-      <main className="max-w-5xl mx-auto w-full p-4 md:p-8">
-        <Card className="p-6 md:p-8 h-full">
-          {/* Internal Grid for Content Structure */}
-          <div className="grid grid-rows-[auto_auto_1fr] gap-6">
-            
-            {/* Diagram Title */}
-            <SectionTitle title={currentData.title} icon={CurrentIcon} />
+        {/* Flecha 1 */}
+        <div className="w-8 h-1 bg-slate-300 relative">
+          <div className={`absolute top-0 left-0 h-full bg-blue-500 transition-all duration-1000 ${step >= 2 ? 'w-full' : 'w-0'}`}></div>
+        </div>
 
-            {/* Diagram Description */}
-            <div className="prose prose-slate max-w-none border-l-4 border-indigo-200 pl-4 bg-indigo-50/50 py-3 pr-3 rounded-r-lg">
-              <p className="text-slate-700">{currentData.description}</p>
-            </div>
-
-            {/* Diagram Render */}
-            <div className="mt-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {activeTab === 'sectores' && <SectorMapDiagram />}
-              {activeTab === 'beneficios' && <BenefitsDiagram />}
-              {activeTab === 'retos' && <ChallengesDiagram />}
-            </div>
-
+        {/* Paso 2: Motor de Autorización */}
+        <div className={`grid gap-2 justify-items-center transition-opacity ${step >= 2 ? 'opacity-100' : 'opacity-50'}`}>
+          <div className="bg-slate-800 p-4 rounded shadow-md text-white">
+            <Lock className={`w-8 h-8 ${step === 2 ? 'animate-bounce text-yellow-400' : 'text-slate-300'}`} />
           </div>
-        </Card>
-      </main>
+          <span className="text-xs font-bold text-center">Gestor de<br/>Autorización</span>
+          {step === 2 && <span className="text-[10px] text-yellow-600 animate-pulse">Verificando...</span>}
+        </div>
 
+        {/* Flecha 2 */}
+        <div className="w-8 h-1 bg-slate-300 relative">
+          <div className={`absolute top-0 left-0 h-full bg-emerald-500 transition-all duration-500 ${step >= 3 ? 'w-full' : 'w-0'}`}></div>
+        </div>
+
+        {/* Paso 3: Base de Datos */}
+        <div className={`grid gap-2 justify-items-center transition-opacity ${step >= 3 ? 'opacity-100' : 'opacity-50'}`}>
+          <div className="bg-white p-4 rounded shadow-md border border-slate-200">
+            <Database className={`w-10 h-10 ${step === 3 ? 'text-emerald-500' : 'text-slate-400'}`} />
+          </div>
+          <span className="text-xs font-bold text-center">Base de Datos</span>
+          {step === 3 && <div className="text-[10px] text-center mt-1">{getResult()}</div>}
+        </div>
+
+      </div>
     </div>
   );
 };
 
-// --- Root App ---
-
-const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabId>('sectores');
-
+// Diagrama 3: Usuarios, Roles y Permisos (Estático)
+const RolesDiagram: React.FC = () => {
   return (
-    <LessonLayout 
-      activeTab={activeTab} 
-      onTabChange={setActiveTab} 
-    />
+    <div className="grid p-6 bg-slate-50 h-full w-full rounded-b-lg border-t border-slate-100 items-center overflow-x-auto">
+      <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] gap-4 min-w-[500px]">
+        
+        {/* Columna Usuarios */}
+        <div className="grid grid-rows-3 gap-4">
+          <div className="bg-white border border-slate-300 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <User className="w-5 h-5 text-slate-500" /> <span className="text-sm font-medium">Ana (Usuario)</span>
+          </div>
+          <div className="bg-white border border-slate-300 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <User className="w-5 h-5 text-slate-500" /> <span className="text-sm font-medium">Luis (Usuario)</span>
+          </div>
+          <div className="bg-white border border-slate-300 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <User className="w-5 h-5 text-slate-500" /> <span className="text-sm font-medium">Carlos (Usuario)</span>
+          </div>
+        </div>
+
+        {/* Conectores 1 */}
+        <div className="grid grid-rows-3 gap-4 items-center justify-items-center text-slate-300">
+          <span className="text-2xl">→</span>
+          <span className="text-2xl">→</span>
+          <span className="text-2xl">→</span>
+        </div>
+
+        {/* Columna Roles */}
+        <div className="grid grid-rows-3 gap-4">
+          <div className="bg-blue-100 border border-blue-300 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <Users className="w-5 h-5 text-blue-600" /> <span className="text-sm font-bold text-blue-800">Administrador</span>
+          </div>
+          <div className="bg-blue-100 border border-blue-300 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <Users className="w-5 h-5 text-blue-600" /> <span className="text-sm font-bold text-blue-800">Desarrollador</span>
+          </div>
+          <div className="bg-blue-100 border border-blue-300 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <Users className="w-5 h-5 text-blue-600" /> <span className="text-sm font-bold text-blue-800">Analista</span>
+          </div>
+        </div>
+
+        {/* Conectores 2 */}
+        <div className="grid grid-rows-3 gap-4 items-center justify-items-center text-slate-300">
+          <span className="text-2xl">→</span>
+          <span className="text-2xl">→</span>
+          <span className="text-2xl">→</span>
+        </div>
+
+        {/* Columna Permisos */}
+        <div className="grid grid-rows-3 gap-4">
+          <div className="bg-emerald-50 border border-emerald-200 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <Key className="w-4 h-4 text-emerald-600" /> <span className="text-xs">Todo (CRUD, Config)</span>
+          </div>
+          <div className="bg-emerald-50 border border-emerald-200 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <Key className="w-4 h-4 text-emerald-600" /> <span className="text-xs">Lectura / Escritura</span>
+          </div>
+          <div className="bg-emerald-50 border border-emerald-200 p-3 rounded shadow-sm grid grid-cols-[auto_1fr] items-center gap-2">
+            <Key className="w-4 h-4 text-emerald-600" /> <span className="text-xs">Solo Lectura</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
   );
 };
 
-export default App;
+
+// --- Componentes de Pestañas (Secciones) ---
+
+const Section1: React.FC = () => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <div className="grid gap-4">
+      <h2 className="text-2xl font-bold text-slate-800 border-b pb-2">1. Importancia de la seguridad en bases de datos</h2>
+      <p className="text-slate-600 leading-relaxed">
+        Las bases de datos suelen almacenar información crítica para organizaciones, como datos financieros, registros académicos o información de clientes. Por esta razón, es fundamental implementar mecanismos de seguridad que protejan la información.
+      </p>
+      <div className="bg-slate-100 p-4 rounded-md border-l-4 border-blue-500 grid gap-2">
+        <strong className="text-sm text-slate-800">La seguridad en bases de datos busca prevenir:</strong>
+        <ul className="grid gap-2 text-sm text-slate-700 ml-2">
+          <li className="grid grid-cols-[auto_1fr] gap-2 items-center"><XCircle className="w-4 h-4 text-red-500"/> accesos no autorizados</li>
+          <li className="grid grid-cols-[auto_1fr] gap-2 items-center"><XCircle className="w-4 h-4 text-red-500"/> modificación indebida de información</li>
+          <li className="grid grid-cols-[auto_1fr] gap-2 items-center"><XCircle className="w-4 h-4 text-red-500"/> pérdida o destrucción de datos</li>
+          <li className="grid grid-cols-[auto_1fr] gap-2 items-center"><XCircle className="w-4 h-4 text-red-500"/> divulgación de información confidencial</li>
+        </ul>
+      </div>
+      <p className="text-slate-600 leading-relaxed">
+        Los Sistemas de Gestión de Bases de Datos implementan diferentes mecanismos para controlar quién puede acceder a los datos y qué acciones puede realizar cada usuario.
+      </p>
+    </div>
+
+    <Card className="grid grid-rows-[auto_auto_1fr]">
+      <div className="p-4 border-b border-slate-100 bg-white">
+        <h3 className="text-lg font-bold text-slate-800">Arquitectura de Seguridad Básica</h3>
+      </div>
+      <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 text-sm text-slate-600">
+        Diagrama estático que muestra una base de datos protegida por capas de seguridad aislando el núcleo del sistema frente a los usuarios externos.
+      </div>
+      <SecurityLayersDiagram />
+    </Card>
+  </div>
+);
+
+const Section2: React.FC = () => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <div className="grid gap-4">
+      <h2 className="text-2xl font-bold text-slate-800 border-b pb-2">2. Concepto de autorización</h2>
+      <p className="text-slate-600 leading-relaxed">
+        La autorización es el proceso mediante el cual el sistema determina qué acciones puede realizar cada usuario dentro de la base de datos.
+      </p>
+      <p className="text-slate-600 leading-relaxed">
+        Cada usuario puede tener distintos niveles de acceso según su rol dentro de la organización.
+      </p>
+      
+      <div className="grid gap-3 mt-2">
+        <h4 className="font-semibold text-slate-800">Por ejemplo:</h4>
+        <div className="grid grid-cols-[auto_1fr] gap-3 items-center bg-white p-3 rounded border border-slate-200 shadow-sm">
+          <Settings className="text-purple-600 w-5 h-5" />
+          <span className="text-sm">Un <strong>administrador</strong> puede crear tablas y gestionar usuarios.</span>
+        </div>
+        <div className="grid grid-cols-[auto_1fr] gap-3 items-center bg-white p-3 rounded border border-slate-200 shadow-sm">
+          <Activity className="text-blue-600 w-5 h-5" />
+          <span className="text-sm">Un <strong>analista</strong> puede consultar información.</span>
+        </div>
+        <div className="grid grid-cols-[auto_1fr] gap-3 items-center bg-white p-3 rounded border border-slate-200 shadow-sm">
+          <Server className="text-orange-600 w-5 h-5" />
+          <span className="text-sm">Un <strong>operador</strong> puede insertar o actualizar registros.</span>
+        </div>
+      </div>
+      
+      <p className="text-slate-600 leading-relaxed mt-2 p-3 bg-blue-50 border border-blue-100 rounded text-sm font-medium">
+        La autorización garantiza que los usuarios interactúen con la base de datos solo dentro de los límites permitidos.
+      </p>
+    </div>
+
+    <Card className="grid grid-rows-[auto_auto_1fr]">
+      <div className="p-4 border-b border-slate-100 bg-white">
+        <h3 className="text-lg font-bold text-slate-800">Flujo de Autorización Dinámico</h3>
+      </div>
+      <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 text-sm text-slate-600">
+        Diagrama dinámico que muestra un proceso de autenticación seguido de verificación de permisos antes de permitir una operación.
+      </div>
+      <AuthorizationDiagram />
+    </Card>
+  </div>
+);
+
+const Section3: React.FC = () => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <div className="grid gap-6">
+      <h2 className="text-2xl font-bold text-slate-800 border-b pb-2">3. Control de acceso mediante usuarios y roles</h2>
+      <p className="text-slate-600 leading-relaxed">
+        Los SGBD utilizan dos mecanismos principales para administrar permisos: <strong>usuarios</strong> y <strong>roles</strong>.
+      </p>
+      
+      <div className="grid gap-4">
+        <div className="bg-white border border-slate-200 rounded p-4 grid gap-2 shadow-sm">
+          <h3 className="font-bold text-blue-800 text-lg flex items-center gap-2"><User className="w-5 h-5"/> Usuarios</h3>
+          <p className="text-sm text-slate-600">Un usuario representa una cuenta que puede acceder al sistema.</p>
+          <ul className="text-sm text-slate-700 ml-4 list-disc mt-2 grid gap-1">
+            <li>credenciales de acceso</li>
+            <li>permisos específicos</li>
+            <li>acceso limitado a determinados objetos de la base de datos</li>
+          </ul>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded p-4 grid gap-2 shadow-sm">
+          <h3 className="font-bold text-emerald-800 text-lg flex items-center gap-2"><Users className="w-5 h-5"/> Roles</h3>
+          <p className="text-sm text-slate-600">Un rol es un conjunto de privilegios agrupados que pueden asignarse a varios usuarios.</p>
+          <div className="text-sm text-slate-700 mt-2">
+            <strong>Ejemplos de roles comunes:</strong>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <span className="bg-slate-100 p-1 rounded text-center text-xs font-medium">administrador del sistema</span>
+              <span className="bg-slate-100 p-1 rounded text-center text-xs font-medium">usuario de consulta</span>
+              <span className="bg-slate-100 p-1 rounded text-center text-xs font-medium">desarrollador</span>
+              <span className="bg-slate-100 p-1 rounded text-center text-xs font-medium">analista de datos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p className="text-slate-600 leading-relaxed text-sm bg-slate-100 p-3 rounded italic">
+        El uso de roles facilita la administración, ya que permite asignar permisos a múltiples usuarios de manera centralizada.
+      </p>
+    </div>
+
+    <Card className="grid grid-rows-[auto_auto_1fr]">
+      <div className="p-4 border-b border-slate-100 bg-white">
+        <h3 className="text-lg font-bold text-slate-800">Asignación de Privilegios y Roles</h3>
+      </div>
+      <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 text-sm text-slate-600">
+        Diagrama estático que muestra la relación entre usuarios conectados a roles, y cómo estos roles están asociados a privilegios específicos.
+      </div>
+      <RolesDiagram />
+    </Card>
+  </div>
+);
+
+// --- Componente Principal ---
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('tab1');
+
+  const tabs: Tab[] = [
+    { id: 'tab1', label: '1. Importancia y Seguridad' },
+    { id: 'tab2', label: '2. Concepto de Autorización' },
+    { id: 'tab3', label: '3. Usuarios y Roles' },
+  ];
+
+  return (
+    <LessonLayout
+      title="Seguridad y Autorización en Bases de Datos"
+      tabs={tabs}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+    >
+      {/* Contenido Renderizado Condicionalmente basado en la pestaña */}
+      <div className="animate-in fade-in duration-500">
+        {activeTab === 'tab1' && <Section1 />}
+        {activeTab === 'tab2' && <Section2 />}
+        {activeTab === 'tab3' && <Section3 />}
+      </div>
+    </LessonLayout>
+  );
+}
