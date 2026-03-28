@@ -32,6 +32,11 @@ import Lesson29 from './components/Lesson29'
 import Lesson30 from './components/Lesson30'
 import Lesson31 from './components/Lesson31'
 import Lesson32 from './components/Lesson32'
+import Lesson33 from './components/Lesson33'
+import Lesson34 from './components/Lesson34'
+import Lesson35 from './components/Lesson35'
+import Lesson36 from './components/Lesson36'
+import Lesson37 from './components/Lesson37'
 
 const lessons = {
   lesson1: Lesson1,
@@ -66,6 +71,11 @@ const lessons = {
   lesson30: Lesson30,
   lesson31: Lesson31,
   lesson32: Lesson32,
+  lesson33: Lesson33,
+  lesson34: Lesson34,
+  lesson35: Lesson35,
+  lesson36: Lesson36,
+  lesson37: Lesson37,
   
 } as const
 
@@ -85,7 +95,7 @@ function App() {
         value={lesson}
         onChange={(e) => setLesson(e.target.value as LessonKey)}
       >
-        {Array.from({ length: 32 }, (_, i) => i + 1).map((n) => (
+        {Array.from({ length: 37 }, (_, i) => i + 1).map((n) => (
           <option key={n} value={`lesson${n}`}>
             Lección {n}
           </option>
